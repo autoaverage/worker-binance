@@ -88,7 +88,7 @@ const cronjob = new cron.CronJob(process.env.DCA_CRON!, async () => {
 });
 cronjob.start();
 log(
-  `Started. Will purchase ${purchaseAmount} ${quoteAsset} worth of ${asset} on the scheduled defined by ${process
+  `Started. Will purchase ${purchaseAmount} ${quoteAsset} worth of ${asset} on the schedule defined by ${process
     .env.DCA_CRON!}`
 );
 
