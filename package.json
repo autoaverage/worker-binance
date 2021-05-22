@@ -1,0 +1,22 @@
+{
+  "name": "binance-dcabot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:sboli/binance-dcabot.git",
+  "author": "Bolivar Stephen",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsc",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^15.6.0",
+    "nodemon": "^2.0.7",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  }
+}
