@@ -10,6 +10,8 @@ export enum BinanceSecurity {
   MARKET_DATA,
 }
 
+const cleanSymbol = (str: string) => (str || '').replace('/', '');
+
 export class Binance {
   constructor(
     private readonly apiKey: string,
@@ -20,10 +22,38 @@ export class Binance {
     return this.query(
       '/api/v3/ticker/price',
       {
-        symbol,
+        symbol: cleanSymbol(symbol),
       },
       BinanceSecurity.NONE
     );
+  }
+
+  public retrieveAccount() {
+    return this.query('/api/v3/account');
+  }
+
+  public async createPurchase(symbol: string, amount: number) {
+    const payload: any = {
+      symbol: cleanSymbol(symbol),
+      quoteOrderQty: amount,
+      side: 'BUY',
+      type: 'MARKET',
+      recvWindow: 50000,
+    };
+    return this.query('/api/v3/order', payload, BinanceSecurity.TRADE, 'post');
+    console.log(qs.stringify(payload) + '&signature=' + this.sign(payload));
+    const { data } = await Axios.post(
+      process.env.BINANCE_BASE_URL + '/api/v3/order/test',
+      qs.stringify(payload) + '&signature=' + this.sign(payload),
+      {
+        headers: {
+          'X-MBX-APIKEY': this.apiKey,
+          'Content-Type': 'application/application/x-www-form-urlencoded',
+          Accept: 'application/application/x-www-form-urlencoded',
+        },
+      }
+    );
+    return data;
   }
 
   private sign(params: any) {
@@ -35,10 +65,10 @@ export class Binance {
 
   private async query(
     endpoint: string,
-    params: any,
-    security: BinanceSecurity
+    params?: any,
+    security: BinanceSecurity = BinanceSecurity.USER_DATA,
+    method: 'get' | 'post' | 'delete' = 'get'
   ) {
-    console.log('>', endpoint, ' :', JSON.stringify(params));
     const fullParams = {
       ...params,
     };
@@ -51,11 +81,19 @@ export class Binance {
         ? undefined
         : { 'X-MBX-APIKEY': this.apiKey };
 
-    return (
-      await Axios.get(process.env.BINANCE_BASE_URL + endpoint, {
-        headers,
-        params: fullParams,
-      })
-    ).data.price;
+    const options = {
+      headers: {
+        'Content-Type': 'application/application/x-www-form-urlencoded',
+        Accept: 'application/application/x-www-form-urlencoded',
+        ...headers,
+      },
+      params: fullParams,
+    };
+    const res = await Axios[method](
+      process.env.BINANCE_BASE_URL + endpoint,
+      method === 'post' ? undefined : options,
+      method === 'get' ? undefined : options
+    );
+    return res.data;
   }
 }
