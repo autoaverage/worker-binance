@@ -41,19 +41,6 @@ export class Binance {
       recvWindow: 50000,
     };
     return this.query('/api/v3/order', payload, BinanceSecurity.TRADE, 'post');
-    console.log(qs.stringify(payload) + '&signature=' + this.sign(payload));
-    const { data } = await Axios.post(
-      process.env.BINANCE_BASE_URL + '/api/v3/order/test',
-      qs.stringify(payload) + '&signature=' + this.sign(payload),
-      {
-        headers: {
-          'X-MBX-APIKEY': this.apiKey,
-          'Content-Type': 'application/application/x-www-form-urlencoded',
-          Accept: 'application/application/x-www-form-urlencoded',
-        },
-      }
-    );
-    return data;
   }
 
   private sign(params: any) {
