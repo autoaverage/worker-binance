@@ -15,6 +15,7 @@ FROM node:14 as run-stage
 
 WORKDIR /usr/src/app
 COPY --from=build-stage /usr/src/app/dist .
+COPY --from=build-stage /usr/src/app/node_modules ./node_modules
 USER node
 
 ENTRYPOINT [ "node", "index.js" ]

@@ -1,6 +1,7 @@
+import cron from 'cron';
 import dotenv from 'dotenv';
 import { Binance } from './binance';
-import { averageFillPrice } from './utils';
+import { averageFillPrice, delay } from './utils';
 
 dotenv.config();
 
@@ -44,6 +45,19 @@ const execute = async () => {
   }
 };
 
-setInterval(() => {
-  execute();
-}, parseInt(process.env.DCA_INTERVAL_SECONDS || '4') * 1000);
+let isExecuting = false;
+const cronjob = new cron.CronJob(process.env.DCA_CRON!, async () => {
+  isExecuting = true;
+  await execute();
+  isExecuting = true;
+});
+cronjob.start();
+
+process.on('SIGTERM', async () => {
+  log('SIGTERM signal received. Stopping job and exiting.');
+  cronjob.stop();
+  while (isExecuting) {
+    await delay(200);
+  }
+  process.exit(0);
+});
