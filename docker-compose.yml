@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  btc:
+    build:
+      context: .
+    volumes:
+      - ./.env:/usr/src/app/.env
+    environment:
+      # Override local .env file
+      - DCA_SYMBOL=BTC/USDT
+      - DCA_MIN_VARIATION_PERCENT=5
+      - 'DCA_CRON=0 0 * * * *'
+  ltc:
+    build:
+      context: .
+    volumes:
+      - ./.env:/usr/src/app/.env
+    environment:
+      # Override local .env file
+      - DCA_SYMBOL=LTC/USDT
+      - DCA_MIN_VARIATION_PERCENT=5
+      - 'DCA_CRON=0 0 * * * *'

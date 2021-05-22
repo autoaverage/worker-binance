@@ -87,6 +87,10 @@ const cronjob = new cron.CronJob(process.env.DCA_CRON!, async () => {
   isExecuting = true;
 });
 cronjob.start();
+log(
+  `Started. Will purchase ${purchaseAmount} ${quoteAsset} worth of ${asset} on the scheduled defined by ${process
+    .env.DCA_CRON!}`
+);
 
 process.on('SIGTERM', async () => {
   log('SIGTERM signal received. Stopping job and exiting.');
