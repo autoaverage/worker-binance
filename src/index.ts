@@ -16,10 +16,36 @@ const binance = new Binance(
 const asset = process.env.DCA_SYMBOL!.split('/')[0].trim();
 const quoteAsset = process.env.DCA_SYMBOL!.split('/').pop()?.trim();
 const purchaseAmount = parseFloat(process.env.DCA_QUOTE_PURCHASE_AMOUNT || '0');
+const minVariationPercent = parseFloat(
+  process.env.DCA_MIN_VARIATION_PERCENT || '0'
+);
 
 const retrieveQuoteBalance = async () => {
   const { balances } = await binance.retrieveAccount();
   return balances.find(({ asset }: any) => asset === quoteAsset).free;
+};
+
+const isPriceAveraged = async (price: number) => {
+  const orders = await binance.retrieveTrades(process.env.DCA_SYMBOL!);
+  if (minVariationPercent > 0) {
+    const min = price - (minVariationPercent / 100) * price,
+      max = price + (minVariationPercent / 100) * price;
+    const matches = orders.filter(
+      (it: any) => it.price > min && it.price < max
+    );
+    if (matches.length > 0) {
+      const m = matches[0];
+      const changePercent =
+        ((price - parseFloat(m.price)) / parseFloat(m.price)) * 100;
+      log(
+        `Already averaged at (${m.price}) for an amount of ${
+          m.quoteQty
+        } ${m.symbol.replace(asset, '')} (${changePercent.toFixed(4)}% change)`
+      );
+      return true;
+    }
+  }
+  return false;
 };
 
 const execute = async () => {
@@ -31,13 +57,22 @@ const execute = async () => {
       return;
     }
     log(`Current ${quoteAsset} balance: ${quoteAssetBalance}`);
-    const { orderId, cummulativeQuoteQty, fills } =
-      await binance.createPurchase(process.env.DCA_SYMBOL!, purchaseAmount);
-    log(
-      `(${orderId}) Purchased ${cummulativeQuoteQty} ${quoteAsset} worth of ${asset} at an average price of ${averageFillPrice(
-        fills
-      )} ${quoteAsset}`
-    );
+    log(`Current price of ${process.env.DCA_SYMBOL}: ${price}`);
+    if (!(await isPriceAveraged(parseFloat(price)))) {
+      const purchase = await binance.createPurchase(
+        process.env.DCA_SYMBOL!,
+        purchaseAmount
+      );
+      if (purchase) {
+        const { orderId, cummulativeQuoteQty, fills } = purchase;
+        log(
+          `(${orderId}) Purchased ${cummulativeQuoteQty} ${quoteAsset} worth of ${asset} at an average price of ${averageFillPrice(
+            fills
+          )} ${quoteAsset}`
+        );
+      }
+    }
+
     // const b = await binance.retrieveBalances();
     // console.log(b);
   } catch (e) {

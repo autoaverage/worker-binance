@@ -32,6 +32,15 @@ export class Binance {
     return this.query('/api/v3/account');
   }
 
+  public retrieveTrades(symbol: string) {
+    return this.query(
+      '/api/v3/myTrades',
+      { symbol: cleanSymbol(symbol) },
+      BinanceSecurity.USER_DATA,
+      'get'
+    );
+  }
+
   public async createPurchase(symbol: string, amount: number) {
     const payload: any = {
       symbol: cleanSymbol(symbol),
