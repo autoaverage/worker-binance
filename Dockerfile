@@ -1,5 +1,5 @@
 # BUILD
-FROM node:14 as build-stage
+FROM node:14-alpine as build-stage
 
 WORKDIR /usr/src/app
 
@@ -11,7 +11,7 @@ RUN yarn run build
 
 
 # RUN
-FROM node:14 as run-stage
+FROM node:14-alpine as run-stage
 
 WORKDIR /usr/src/app
 COPY --from=build-stage /usr/src/app/dist .
