@@ -9,7 +9,7 @@ services:
     environment:
       # Override local .env file
       - DCA_SYMBOL=BTC/USDT
-      - DCA_MIN_VARIATION_PERCENT=5
+      - DCA_MIN_VARIATION_PERCENT=2
       - 'DCA_CRON= 0 * * * *'
   ltc:
     build:
@@ -19,5 +19,5 @@ services:
     environment:
       # Override local .env file
       - DCA_SYMBOL=LTC/USDT
-      - DCA_MIN_VARIATION_PERCENT=5
+      - DCA_MIN_VARIATION_PERCENT=2
       - 'DCA_CRON= 0 * * * *'
