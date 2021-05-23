@@ -84,7 +84,7 @@ let isExecuting = false;
 const cronjob = new cron.CronJob(process.env.DCA_CRON!, async () => {
   isExecuting = true;
   await execute();
-  isExecuting = true;
+  isExecuting = false;
 });
 cronjob.start();
 log(
