@@ -23,7 +23,14 @@ export class Orders {
     this.connection = amqp.connect(
       process.env.RMQ_URLS.split(',')
         .map((it) => it.trim())
-        .filter((it) => it)
+        .filter((it) => it),
+      {
+        connectionOptions: {
+          clientProperties: {
+            connection_name: process.env.WORKER_ID,
+          },
+        },
+      }
     );
     this.channelWrapper = this.connection.createChannel({
       json: true,
