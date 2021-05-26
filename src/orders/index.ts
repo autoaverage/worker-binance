@@ -16,10 +16,13 @@ export class Orders {
   private channelWrapper: amqp.ChannelWrapper | undefined;
 
   constructor() {
+    if (!process.env.RMQ_URLS) {
+      throw new Error('process.env.RMQ_URLS not defined');
+    }
     this.connection = amqp.connect(
-      (process.env.RMQ_URLS || 'amqp://localhost:5672')
-        .split(',')
+      process.env.RMQ_URLS.split(',')
         .map((it) => it.trim())
+        .filter((it) => it)
     );
     this.channelWrapper = this.connection.createChannel({
       json: true,
@@ -30,9 +33,12 @@ export class Orders {
   }
 
   create(order: OrderCreatePayload) {
-    this.channelWrapper?.sendToQueue(QUEUE, {
-      pattern: 'create',
-      data: order,
-    });
+    console.log('SENDING', order);
+    this.channelWrapper
+      ?.sendToQueue(QUEUE, {
+        pattern: 'create',
+        data: order,
+      })
+      .catch((e) => console.log('failed to send message to queue', e));
   }
 }
