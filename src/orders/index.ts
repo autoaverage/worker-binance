@@ -10,6 +10,7 @@ export interface OrderCreatePayload {
   quoteQuantity: string;
   status: string;
   user: string;
+  worker: string;
 }
 export class Orders {
   private connection: amqp.AmqpConnectionManager | undefined;

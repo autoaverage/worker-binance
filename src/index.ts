@@ -74,6 +74,7 @@ const execute = async () => {
           timestamp: purchase.transactTime,
           symbol: purchase.symbol,
           user: process.env.USER_ID || '',
+          worker: process.env.WORKER_ID || '',
         });
         log(
           `(${orderId}) Purchased ${cummulativeQuoteQty} ${quoteAsset} worth of ${asset} at an average price of ${averageFillPrice(
