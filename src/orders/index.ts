@@ -1,48 +1,25 @@
-var q = 'tasks';
-import * as amqpCm from 'amqp-connection-manager';
-import * as amqp from 'amqplib';
-import { log } from '../utils';
+import * as amqp from 'amqp-connection-manager';
 
 const QUEUE = 'orders';
 
 export class Orders {
-  private connection: amqp.Connection | undefined;
-  private channel: amqp.Channel | undefined;
+  private connection: amqp.AmqpConnectionManager | undefined;
+  private channelWrapper: amqp.ChannelWrapper | undefined;
 
-  constructor() {}
-
-  async init() {
-    return new Promise((resolve, reject) => {
-      amqpCm.connect(['amqp://localhost:5672']);
-      amqp.connect('amqp://localhost:5672').then((connection) => {
-        this.connection = connection;
-        connection
-          .createChannel()
-          .then((channel) => {
-            this.channel = channel;
-            channel
-              .assertQueue(QUEUE, { durable: true })
-              .then(() => {
-                log(`${QUEUE} queue ready`);
-                resolve(null);
-              })
-              .catch(reject);
-          })
-          .catch(reject);
-      });
+  constructor() {
+    this.connection = amqp.connect(['amqp://localhost:5672']);
+    this.channelWrapper = this.connection.createChannel({
+      json: true,
+      setup: function (channel: any) {
+        return channel.assertQueue(QUEUE, { durable: true });
+      },
     });
   }
 
   create(order: any) {
-    console.log('sending');
-    this.channel?.sendToQueue(
-      QUEUE,
-      Buffer.from(
-        JSON?.stringify({
-          pattern: 'create',
-          data: 'yolo',
-        })
-      )
-    );
+    this.channelWrapper?.sendToQueue(QUEUE, {
+      pattern: 'create',
+      data: 'yoltwice',
+    });
   }
 }

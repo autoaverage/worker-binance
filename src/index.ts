@@ -12,9 +12,7 @@ const binance = new Binance(
 );
 
 const ordersService = new Orders();
-ordersService.init().then(() => {
-  ordersService.create({});
-});
+ordersService.create({});
 
 const asset = process.env.DCA_SYMBOL!.split('/')[0].trim();
 const quoteAsset = process.env.DCA_SYMBOL!.split('/').pop()?.trim();

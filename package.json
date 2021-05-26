@@ -11,6 +11,7 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "amqp-connection-manager": "^3.2.2",
     "amqplib": "^0.8.0",
     "axios": "^0.21.1",
     "cron": "^1.8.2",
