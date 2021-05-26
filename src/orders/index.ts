@@ -34,7 +34,6 @@ export class Orders {
   }
 
   create(order: OrderCreatePayload) {
-    console.log('SENDING', order);
     this.channelWrapper
       ?.sendToQueue(QUEUE, {
         pattern: 'create',
