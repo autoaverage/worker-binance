@@ -2,12 +2,24 @@ import * as amqp from 'amqp-connection-manager';
 
 const QUEUE = 'orders';
 
+export interface OrderCreatePayload {
+  symbol: string;
+  clientOrderId: string;
+  timestamp: number;
+  quantity: string;
+  quoteQuantity: string;
+  status: string;
+}
 export class Orders {
   private connection: amqp.AmqpConnectionManager | undefined;
   private channelWrapper: amqp.ChannelWrapper | undefined;
 
   constructor() {
-    this.connection = amqp.connect(['amqp://localhost:5672']);
+    this.connection = amqp.connect(
+      (process.env.RMQ_URLS || 'amqp://localhost:5672')
+        .split(',')
+        .map((it) => it.trim())
+    );
     this.channelWrapper = this.connection.createChannel({
       json: true,
       setup: function (channel: any) {
@@ -16,10 +28,10 @@ export class Orders {
     });
   }
 
-  create(order: any) {
+  create(order: OrderCreatePayload) {
     this.channelWrapper?.sendToQueue(QUEUE, {
       pattern: 'create',
-      data: 'yoltwice',
+      data: order,
     });
   }
 }

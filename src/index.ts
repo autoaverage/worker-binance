@@ -12,7 +12,6 @@ const binance = new Binance(
 );
 
 const ordersService = new Orders();
-ordersService.create({});
 
 const asset = process.env.DCA_SYMBOL!.split('/')[0].trim();
 const quoteAsset = process.env.DCA_SYMBOL!.split('/').pop()?.trim();
@@ -64,8 +63,17 @@ const execute = async () => {
         process.env.DCA_SYMBOL!,
         purchaseAmount
       );
+
       if (purchase) {
         const { orderId, cummulativeQuoteQty, fills } = purchase;
+        ordersService.create({
+          clientOrderId: purchase.clientOrderId,
+          quantity: purchase.executedQty,
+          quoteQuantity: purchase.cummulativeQuoteQty,
+          status: purchase.status,
+          timestamp: purchase.transactTime,
+          symbol: purchase.symbol,
+        });
         log(
           `(${orderId}) Purchased ${cummulativeQuoteQty} ${quoteAsset} worth of ${asset} at an average price of ${averageFillPrice(
             fills
