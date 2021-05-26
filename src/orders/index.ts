@@ -45,6 +45,8 @@ export class Orders {
       ?.sendToQueue(QUEUE, {
         pattern: 'create',
         data: order,
+      }, {
+        persistent: true
       })
       .catch((e) => console.log('failed to send message to queue', e));
   }
