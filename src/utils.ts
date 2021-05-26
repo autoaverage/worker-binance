@@ -4,3 +4,6 @@ export const averageFillPrice = (fills: any[]) =>
 
 export const delay = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+export const log = (...args: any[]) =>
+  console.log(`${new Date().toISOString()}:`, ...args);

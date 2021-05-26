@@ -1,17 +1,20 @@
 import cron from 'cron';
 import dotenv from 'dotenv';
 import { Binance } from './binance';
-import { averageFillPrice, delay } from './utils';
+import { Orders } from './orders';
+import { averageFillPrice, delay, log } from './utils';
 
 dotenv.config();
-
-const log = (...args: any[]) =>
-  console.log(`${new Date().toISOString()}:`, ...args);
 
 const binance = new Binance(
   process.env.BINANCE_API_KEY!,
   process.env.BINANCE_SECRET_KEY!
 );
+
+const ordersService = new Orders();
+ordersService.init().then(() => {
+  ordersService.create({});
+});
 
 const asset = process.env.DCA_SYMBOL!.split('/')[0].trim();
 const quoteAsset = process.env.DCA_SYMBOL!.split('/').pop()?.trim();

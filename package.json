@@ -11,12 +11,15 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "amqplib": "^0.8.0",
     "axios": "^0.21.1",
     "cron": "^1.8.2",
     "dotenv": "^10.0.0",
     "qs": "^6.10.1"
   },
   "devDependencies": {
+    "@types/amqp-connection-manager": "^2.0.10",
+    "@types/amqplib": "^0.5.17",
     "@types/cron": "^1.7.2",
     "@types/node": "^15.6.0",
     "@types/qs": "^6.9.6",
