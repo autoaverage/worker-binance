@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import * as crypto from 'crypto';
-import qs from 'qs';
+import * as qs from 'qs';
 
 export enum BinanceSecurity {
   NONE,
