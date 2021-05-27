@@ -13,6 +13,7 @@ export interface OrderCreatePayload {
   worker: string;
   side: string;
   errorCode: string;
+  errorMessage: string;
   averageFillQuoteAmount: number;
 }
 export class Orders {

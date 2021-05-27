@@ -91,6 +91,7 @@ const executeOrder = async () => {
         worker: process.env.WORKER_ID || '',
         side,
         errorCode: '0',
+        errorMessage: '',
       });
       log(
         `(${orderId}) Executed ${side} order for ${cummulativeQuoteQty} ${quoteAsset} worth of ${asset} at an average price of ${averageFillPrice(
@@ -105,6 +106,7 @@ const executeOrder = async () => {
       quoteQuantity: '' + amount,
       status: 'ERROR',
       errorCode: e.response.data.code,
+      errorMessage: e.response.data.message,
       timestamp: new Date().getTime(),
       symbol: asset + quoteAsset,
       user: process.env.USER_ID || '',
