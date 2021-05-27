@@ -44,10 +44,10 @@ export class Binance {
   public async createPurchase(symbol: string, amount: number, side: string) {
     const payload: any = {
       symbol: cleanSymbol(symbol),
-      quoteOrderQty: amount,
       side,
       type: 'MARKET',
-      recvWindow: 5000,
+      recvWindow: 50000,
+      quoteOrderQty: amount,
     };
     return this.query('/api/v3/order', payload, BinanceSecurity.TRADE, 'post');
   }
