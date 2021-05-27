@@ -47,7 +47,7 @@ export class Binance {
       quoteOrderQty: amount,
       side,
       type: 'MARKET',
-      recvWindow: 50000,
+      recvWindow: 5000,
     };
     return this.query('/api/v3/order', payload, BinanceSecurity.TRADE, 'post');
   }
