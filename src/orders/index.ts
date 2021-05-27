@@ -11,6 +11,9 @@ export interface OrderCreatePayload {
   status: string;
   user: string;
   worker: string;
+  side: string;
+  errorCode: string;
+  averageFillQuoteAmount: number;
 }
 export class Orders {
   private connection: amqp.AmqpConnectionManager | undefined;
@@ -42,12 +45,16 @@ export class Orders {
 
   create(order: OrderCreatePayload) {
     this.channelWrapper
-      ?.sendToQueue(QUEUE, {
-        pattern: 'create',
-        data: order,
-      }, {
-        persistent: true
-      })
+      ?.sendToQueue(
+        QUEUE,
+        {
+          pattern: 'create',
+          data: order,
+        },
+        {
+          persistent: true,
+        }
+      )
       .catch((e) => console.log('failed to send message to queue', e));
   }
 }

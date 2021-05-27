@@ -41,11 +41,11 @@ export class Binance {
     );
   }
 
-  public async createPurchase(symbol: string, amount: number) {
+  public async createPurchase(symbol: string, amount: number, side: string) {
     const payload: any = {
       symbol: cleanSymbol(symbol),
       quoteOrderQty: amount,
-      side: 'BUY',
+      side,
       type: 'MARKET',
       recvWindow: 50000,
     };
